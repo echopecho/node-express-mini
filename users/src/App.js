@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
+import Form from './components/Form';
+import UserCard from './components/UserCard';
 
 import axios from 'axios';
 
@@ -8,34 +10,50 @@ class App extends Component {
     super(props);
     this.state = {
       users: [],
-      nameText: "",
-      bioText: ""
+      updateID: null
     }
   }
 
   componentDidMount() {
+    this.fetchUsers();
+  }
+
+  componentDidUpdate() {
+    this.fetchUsers();
+  }
+
+  fetchUsers = () => {
     axios.get('http://localhost:8000/api/users')
       .then(res => {
         this.setState({ users: res.data })
       })
   }
 
-  handleChange = e => {
-    this.setState({ [e.target.name]: e.target.value });
+  setUpdateID = id => {
+    this.setState({ updateID: id });
   }
 
-  addUser = e => {
-    e.preventDefault();
-    let newUser = {
-      name: this.state.nameText,
-      bio: this.state.bioText
-    }
+  addUser = newUser => {
     let newState = this.state.users;
 
     axios.post('http://localhost:8000/api/users', newUser)
       .then(response => {
-        console.log(response.data)
         newState.push(response.data);
+        this.setState({ users: newState });
+      })
+  }
+
+  updateUser = (newUser, id) => {
+    let newState = this.state.users;
+    axios.put(`http://localhost:8000/api/users/${id}`, newUser)
+      .then(response => {
+        newState.map(user => {
+          if(user.id === id) {
+            return { ...user, name: response.data.name, bio: response.data.bio }
+          } else {
+            return { ...user }
+          }
+        })
         this.setState({ users: newState });
       })
   }
@@ -44,37 +62,21 @@ class App extends Component {
     axios.delete(`http://localhost:8000/api/users/${id}`)
       .then(() => {
         let newUsers = this.state.users.filter(user => user.id !== id);
-        this.setState({ users: newUsers})
+        this.setState({ users: newUsers })
       })
   }
 
   render() {
     return (
       <div className="App">
-        <form onSubmit={this.addUser}>
-          <input 
-            type="text"
-            name="nameText"
-            value={this.state.nameText}
-            onChange={this.handleChange}
-            placeholder="Enter name"
-          >
-          </input>
-          <input 
-            type="text"
-            name="bioText"
-            value={this.state.bioText}
-            onChange={this.handleChange}
-            placeholder="Enter bio"
-          >
-          </input>
-          <button type="submit">Add user</button>
-        </form>
+        <Form addUser={this.addUser} updateUser={this.updateUser} update={this.state.updateID} />
         {this.state.users.map(user => (
-          <div key={user.id}>
-            <p>{user.name}</p>
-            <button onClick={() => this.deleteUser(user.id)}>Delete</button>
-          </div>
+          <UserCard 
+            key={user.id} 
+            user={user} 
+            deleteUser={this.deleteUser}
+            updateUser={this.setUpdateID}
+          />
         ))}
       </div>
     );
