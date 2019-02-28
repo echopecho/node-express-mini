@@ -14,8 +14,15 @@ class App extends Component {
   componentDidMount() {
     axios.get('http://localhost:8000/api/users')
       .then(res => {
-        console.log(res.data)
         this.setState({ users: res.data })
+      })
+  }
+
+  deleteUser = id => {
+    axios.delete(`http://localhost:8000/api/users/${id}`)
+      .then(() => {
+        let newUsers = this.state.users.filter(user => user.id !== id);
+        this.setState({ users: newUsers})
       })
   }
 
@@ -23,7 +30,10 @@ class App extends Component {
     return (
       <div className="App">
         {this.state.users.map(user => (
-          <div>{user.name}</div>
+          <div key={user.id}>
+            <p>{user.name}</p>
+            <button onClick={() => this.deleteUser(user.id)}>Delete</button>
+          </div>
         ))}
       </div>
     );
