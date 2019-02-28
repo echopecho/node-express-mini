@@ -1,5 +1,6 @@
 // implement your API here
 const express = require('express');
+// const cors = require('cors');
 
 const db = require('./data/db.js');
 
@@ -7,6 +8,7 @@ const server = express();
 const port = '8000';
 
 server.use(express.json());
+// server.use(cors());
 
 server.get('/api/users', (req, res) => {
   db.find()
@@ -72,20 +74,6 @@ server.delete('/api/users/:id', (req, res) => {
 server.put('/api/users/:id', (req, res) => {
   const { id } = req.params;
   const updateUser = req.body;
-  console.log(updateUser);
-
-  // db.update(id, updateUser)
-  //   .then(test => {
-  //     if(test === 1) {
-  //       db.findById(id)
-  //         .then(updated => {
-  //           res.send(updated)
-  //         })
-  //     }
-  //   })
-  //   .catch(err => {
-  //     res.status(500).json({error: "Why?!"});
-  //   })
 
   db.findById(id)
     .then(user => {
@@ -104,10 +92,10 @@ server.put('/api/users/:id', (req, res) => {
             res.status(500).json({error: "The user information could not be modified."});
           })
         } else {
-          res.status(400).json({errorMessage: "Please provide name and bio for the user."})
+          res.status(400).json({errorMessage: "Please provide name and bio for the user."});
         }
       } else {
-        res.status(404).json({error: "The user with the specified ID does not exist."})
+        res.status(404).json({error: "The user with the specified ID does not exist."});
       }
   })
 })
