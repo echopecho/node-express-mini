@@ -33,11 +33,6 @@ class App extends Component {
     this.setState({ updateID: id });
   }
 
-  unsetUpdateID = () => {
-    this.setState({ updateID: null })
-    this.forceUpdate();
-  }
-
   addUser = newUser => {
     let newState = this.state.users;
 
@@ -50,6 +45,7 @@ class App extends Component {
 
   updateUser = (newUser, id) => {
     let newState = this.state.users;
+
     axios.put(`http://localhost:8000/api/users/${id}`, newUser)
       .then(response => {
         newState.map(user => {
@@ -59,7 +55,11 @@ class App extends Component {
             return { ...user }
           }
         })
-        this.setState({ users: newState });
+
+        this.setState({ 
+          users: newState,
+          updateID: null
+        });
       })
   }
 
@@ -78,7 +78,6 @@ class App extends Component {
           addUser={this.addUser} 
           updateUser={this.updateUser} 
           update={this.state.updateID}
-          unsetID={this.unsetUpdateID} 
         />
         {this.state.users.map(user => (
           <UserCard 

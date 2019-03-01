@@ -27,11 +27,11 @@ class Form extends React.Component {
 
   componentWillReceiveProps() {
     if(!this.props.update){
-    this.setState({ 
-      nameText: '',
-      bioText: ''
-    })
-  }
+      this.setState({ 
+        nameText: '',
+        bioText: ''
+      })
+    }
   }
 
   handleChange = e => {
@@ -45,7 +45,6 @@ class Form extends React.Component {
       bio: this.state.bioText
     };
     if(this.props.update) {
-      this.props.unsetID();
       this.props.updateUser(newUser, this.props.update)
       
     } else {
