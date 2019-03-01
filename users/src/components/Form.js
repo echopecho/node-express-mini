@@ -25,6 +25,15 @@ class Form extends React.Component {
     }
   }
 
+  componentWillReceiveProps() {
+    if(!this.props.update){
+    this.setState({ 
+      nameText: '',
+      bioText: ''
+    })
+  }
+  }
+
   handleChange = e => {
     this.setState({ [e.target.name]: e.target.value });
   }
@@ -36,10 +45,16 @@ class Form extends React.Component {
       bio: this.state.bioText
     };
     if(this.props.update) {
+      this.props.unsetID();
       this.props.updateUser(newUser, this.props.update)
+      
     } else {
       this.props.addUser(newUser);
     }
+    this.setState({
+      nameText: '',
+      bioText: ''
+    })
   }
 
   render() {

@@ -33,6 +33,11 @@ class App extends Component {
     this.setState({ updateID: id });
   }
 
+  unsetUpdateID = () => {
+    this.setState({ updateID: null })
+    this.forceUpdate();
+  }
+
   addUser = newUser => {
     let newState = this.state.users;
 
@@ -69,7 +74,12 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Form addUser={this.addUser} updateUser={this.updateUser} update={this.state.updateID} />
+        <Form 
+          addUser={this.addUser} 
+          updateUser={this.updateUser} 
+          update={this.state.updateID}
+          unsetID={this.unsetUpdateID} 
+        />
         {this.state.users.map(user => (
           <UserCard 
             key={user.id} 
