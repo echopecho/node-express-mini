@@ -26,7 +26,7 @@ class Form extends React.Component {
   }
 
   componentWillReceiveProps() {
-    if(!this.props.update){
+    if(!this.props.update && this.state.nameText.length <= 0 && this.state.bioText.length <= 0){
       this.setState({ 
         nameText: '',
         bioText: ''
